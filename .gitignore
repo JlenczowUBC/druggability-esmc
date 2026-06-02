@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Conda
+.conda/
+
+# Model checkpoints and outputs
+checkpoints/
+outputs/
+runs/
+logs/
+*.pt
+*.safetensors
+wandb/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Local notebooks scratch
+scratch.ipynb
+*-scratch.ipynb

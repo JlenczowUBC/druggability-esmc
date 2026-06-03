@@ -32,8 +32,8 @@ druggability-esm2/
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/<username>/druggability-esm2.git
-cd druggability-esm2
+git clone https://github.com/JlenczowUBC/druggability-esmc.git
+cd druggability-esmc
 ```
 
 ### 2. Create the conda environment
@@ -51,7 +51,7 @@ This installs Python 3.11, PyTorch, transformers, peft (for LoRA), and the rest 
 python -c "import torch; print(torch.cuda.is_available(), torch.cuda.device_count())"
 ```
 
-You should see `True 1` (or higher) on a GPU node. Fine-tuning ESM-C 300M requires a real CUDA GPU. CPU-only machines can step through the early cells but training is infeasible without GPU.
+You should see `True 1` (or higher) on a GPU node. Fine-tuning ESM-C 300M requires a real CUDA GPU.
 
 ### 4. Run the notebook
 
@@ -86,6 +86,7 @@ Adapts Dr. Kilgore's ESM-C LoRA template (`esmc_finetune.ipynb`) for binary drug
 - Stratified train/dev/test split (70/15/15) preserving the ~29% positive class ratio
 - Reports AUC in addition to accuracy (standard for imbalanced binary classification)
 - Saves the best checkpoint by dev AUC, then evaluates on the held-out test split
+- Outputs `binary_classifier_predictions.csv` with per-sequence predicted probabilities
 
 LoRA configuration follows the original template (rank 8, alpha 16, target modules and parameters matching ESM-C's architecture). Only LoRA adapters and the new classification head are trained — the ESM-C backbone stays frozen.
 
@@ -97,14 +98,7 @@ After running the notebook end to end:
 - Dev AUC at each checkpoint (every 250 steps by default)
 - Final test AUC and confusion matrix
 - Best LoRA adapter weights saved to `checkpoints/best/`
-
-## Honest caveats
-
-**1. Family leakage.** The dataset uses random train/test splitting, but druggable proteins are dominated by a few well-known target families (kinases, GPCRs, ion channels). Related family members appear in both train and test, inflating performance estimates. The proper fix is sequence-similarity-based clustering with MMseqs2; that's planned future work.
-
-**2. Compute requirements.** ESM-C 300M needs a real GPU. 1,000 training steps takes ~4 minutes on an H100 per Dr. Kilgore's original notebook. Expect longer on lesser GPUs.
-
-**3. Dataset size.** 3,853 proteins is small for fine-tuning a 300M parameter model. LoRA helps by only training ~0.1% of parameters, but dataset expansion (Open Targets tractability buckets, Pharos full development levels, tiered ChEMBL thresholds) is the next planned step.
+- `binary_classifier_predictions.csv` with per-protein predicted probabilities
 
 ## Citation
 

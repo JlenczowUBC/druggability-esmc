@@ -2,8 +2,6 @@
 
 LoRA fine-tuning pipeline for predicting protein druggability from amino acid sequence using ESM-C 300M.
 
-Part of the AI for Biochemistry directed studies project under Dr. Henry Kilgore at UBC. This repo contains the labeled dataset and a LoRA fine-tuning notebook that adapts ESM-C 300M for binary druggability classification.
-
 ## Background
 
 Built a labeled dataset of 3,853 human proteins from FDA-approved drug targets and ChEMBL bioactivity data. Phase 1 of the project ran a frozen-embedding layer analysis with ESM-2 8M (best AUC 0.815 at layer 6, vs length-only baseline 0.615). This repo is Phase 2 — fine-tuning ESM-C 300M end-to-end with LoRA to push performance further.
@@ -79,16 +77,16 @@ Positives (1,123) are proteins with either FDA-approved drug targets or active C
 
 ## What the fine-tuning notebook does
 
-Adapts Dr. Kilgore's ESM-C LoRA template (`esmc_finetune.ipynb`) for binary druggability classification. Main differences from the original template:
+Adapts an ESM-C LoRA template for binary druggability classification. Pipeline:
 
-- Binary task instead of multi-class enzyme classification (`num_labels=1`, BCE loss)
-- Reads `druggability_dataset.csv` instead of the CARE enzyme CSV
+- Binary task with `num_labels=1` and BCE loss
+- Reads `druggability_dataset.csv`
 - Stratified train/dev/test split (70/15/15) preserving the ~29% positive class ratio
 - Reports AUC in addition to accuracy (standard for imbalanced binary classification)
 - Saves the best checkpoint by dev AUC, then evaluates on the held-out test split
 - Outputs `binary_classifier_predictions.csv` with per-sequence predicted probabilities
 
-LoRA configuration follows the original template (rank 8, alpha 16, target modules and parameters matching ESM-C's architecture). Only LoRA adapters and the new classification head are trained — the ESM-C backbone stays frozen.
+LoRA configuration: rank 8, alpha 16, target modules and parameters matching ESM-C's architecture. Only LoRA adapters and the new classification head are trained — the ESM-C backbone stays frozen.
 
 ## Expected outputs
 
@@ -108,7 +106,3 @@ If this code or dataset is useful, please cite the underlying ESM-C work:
 ESM Cambrian: Revealing the mysteries of proteins with unsupervised learning
 EvolutionaryScale Team. 2024.
 ```
-
-## Contact
-
-Joseph Lenczowski — UBC undergraduate, directed studies under Dr. Henry Kilgore.

@@ -4,20 +4,23 @@ channels:
   - nvidia
   - conda-forge
 dependencies:
-  - python=3.11
+  - python=3.12
   - pip
   - jupyter
   - notebook
   - ipykernel
-  - matplotlib
   - numpy
   - pandas
+  - scipy
   - scikit-learn
+  - matplotlib
   - tqdm
+  - pytorch
+  - pytorch-cuda=12.1
   - pip:
-    - torch
     - transformers>=4.46
     - peft>=0.13
     - accelerate
-    - fair-esm
+    - huggingface_hub
     - safetensors
+    - "esm@git+https://github.com/Biohub/esm.git@c94ed8d"
